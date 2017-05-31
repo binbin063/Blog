@@ -1,8 +1,6 @@
-# RxJS简介
+# RxJS
 
 RxJS(Reactive Extensions for JavaScript)是一个基于可观测数据流在异步编程应用中的库, 提供了强大的数据流组合与控制能力。
-
-## Reactive Programming
 
 ## RxJS实现的维基百科搜索示例，与Auto-Suggest组件相似
 ```
@@ -44,40 +42,46 @@ suggestions.subscribe(data => {
 });
 ```
 
-# 基本概念
-  ## Reactive 响应式编程
-  在Reactive的理念中，我们定义的不是一次性赋值过程，而是可重复的赋值过程，或者说是变量之间的关系：
+## 基本概念
+  - Reactive Programming 响应式编程
+    在Reactive的理念中，我们定义的不是一次性赋值过程，而是可重复的赋值过程，或者说是变量之间的关系：
   ```
   a = b + c
   // 在Reactive的理念
   a: = b + c
   ```
-  定义出这种关系之后，每次b或者c产生改变，这个表达式都会被重新计算。不同的库或者语言的实现机制可能不同，写法也不完全一样，但理念是相通的，都是描述出数据之间的联动关系。
+    定义出这种关系之后，每次b或者c产生改变，这个表达式都会被重新计算。不同的库或者语言的实现机制可能不同，写法也不完全一样，但理念是相通的，都是描述出数据之间的联动关系。
 
-  ## Stream-based
-  万物皆流（Everything is Stream）
-  我们可以把一切输入都当做数据流来处理，比如说：
+    响应式编程是一种完全不同的编程风格。
+  > 响应式编程是个令人发狂的编程范式，不过你可以这么理解它：就像是你先安装好管道，但还没有水流过管道，等到将来某个人发起了一个action，然后潺潺流水就来了，你的管道就开始运作了。
+
+  - Stream-based  
+    万物皆流（Everything is Stream）
+    我们可以把一切输入都当做数据流来处理，比如说：
     - 用户操作
     - 网络响应
     - 定时器
     - Worker
 
-  ## Observable
-  RxJS 是基于观察者模式和迭代器模式以函数式编程思维来实现的
+  - Observable  
+    RxJS 是基于观察者模式和迭代器模式以函数式编程思维来实现的，RxJS拥有非常陡峭的学习曲线。
 
-  ## lodash for async
-  RxJS是Observable的一种引用实现，它提供了一些定制的功能，比如操作符（Operators）、创建不同类型Observable的工厂方法
+  - lodash for async  
+    RxJS是Observable的一种引用实现，它提供了一些定制的功能，比如操作符（Operators）、创建不同类型Observable的工厂方法
   在前端，我们通常有这么一些方式来处理异步的东西：
     - 回调
     - 事件
     - Promise
     - Generator
-  其中，存在两种处理问题的方式，因为需求也是两种：
+
+    其中，存在两种处理问题的方式，因为需求也是两种：
     - 分发
     - 流程
 
-  RxJS的优势在于结合了两种模式，它的每个Observable上都能够订阅，而Observable之间的关系，则能够体现流程
-  从事件到流，它被称为lodash for events，倒不如说是lodash for stream更贴切，它提供的这些操作符也确实可以跟lodash媲美。
+    RxJS的优势在于结合了两种模式，它的每个Observable上都能够订阅，而Observable之间的关系，则能够体现流程。
+    从事件到流，它被称为lodash for events，倒不如说是lodash for stream更贴切，它提供的这些操作符也确实可以跟lodash媲美。
+
+    它和lodash一样也是个工具库。lodash的用法基本上就是，你给它一个输入，它给你一个输出。RxJS的用法则是，你给它一个输入，它给你一个输出，但是跨越了时间。所以，你可以拥有多个值
 
   
 
@@ -164,19 +168,11 @@ Rx.Observable.of(2).subscribe(v => console.log(v));
 # 应用示例
 
 ## 示例一：简单的订阅
-场景：在页面下添加评论，评论列表中显示了它们分别是什么时间创建的，如：一分钟内，昨天，上个月这样的字样，如果某个用户停留在当前视图时间太长，它的这些信息会变得不准确，比如说，用户停留了一个小时，而它看到的信息还显示：5分钟之前发表了评论，实际时间是一个小时零5分钟以前的事了。
+定时器
 ```
-//引入moment这样的库，把显示时间转换为与当前时间的距离
-const diff = moment(createAt).fromNow()
-
-//在没有RxJS的情况下，我们可能会通过一个定时器来做定时刷新，比如在组件内部：
-tick() {
-  this.diff = moment(createAt).fromNow()
-  setTimeout(tick.bind(this), 1000)
-}
-//但组件有很多实例，导致整个界面上可能就有很多定时器在同时跑，这是一种浪费。如果要做优化，可以把定时器做成一种服务，把业务上需要周期执行的东西放进去，当作定时任务来跑，使用RxJS：
+//可以把定时器做成一种服务，把业务上需要周期执行的东西放进去，当作定时任务来跑，使用RxJS：
 Observable.interval(1000).subscribe(() => {
-  this.diff = moment(createAt).fromNow()
+  ...code
 })
 ```
 
@@ -261,7 +257,11 @@ const editable$ = Observable.combineLatest(article$, me$)
 
 更详细探索的可以参见之前的这篇文章：[复杂单页应用的数据层设计](https://github.com/xufei/blog/issues/42)
 
-# RxJS和Redux的结合: redux-observable 中间件
+# 异步操作  
+> 在函数式编程中，异步操作、修改全局变量等与函数外部环境发生的交互叫做副作用（Side Effect）
+通常认为这些操作是邪恶（evil）肮脏（dirty）的，并且也是导致 bug 的源头。
+因为与之相对的是纯函数（pure function），即对于同样的输入总是返回同样的输出的函数，使用这样的函数很容易做组合、测试等操作，很容易验证和保证其正确性。（它们就像数学公式一般准确）  
+## RxJS和Redux的结合: redux-observable 中间件
 
 redux-observable 就是一个使用 RxJS 监听每个 action 并将其变成可观测流（observable stream）的中间件。
 
@@ -269,11 +269,16 @@ redux-observable 就是一个使用 RxJS 监听每个 action 并将其变成可�
 
 > At the highest level, epics are “actions in, actions out”
 
+工作原理：  
+![Alt text](../resource/redux-observable-flow.png)
+
+让跨时间的复杂异步任务的组合和控制变得简单，当然如果只是做请求-响应这种简单的Ajax，那么学习RxJS是多余的。
+
 # 总结
 
 从这个talk中，我们可以学习到：
 
-    - Redux是什么，以及它是如何工作的。
+    - RxJS是什么，以及它是如何工作的。
     - Observable是什么，以及它的基本用法。
     - redux-observable的工作原理以及适用场景。
     - 在复杂的异步场景下，回调和Promise捉襟见肘，而Observable则应对自如。
