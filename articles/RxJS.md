@@ -1,6 +1,12 @@
 # RxJS
 
-RxJS(Reactive Extensions for JavaScript)是一个基于可观测数据流在异步编程应用中的库, 提供了强大的数据流组合与控制能力。
+RxJS(Reactive Extensions for JavaScript)是一个通过使用可观察序列来构建异步和基于事件的程序的库, 提供了强大的数据流组合与控制能力。
+
+## 适用场景  
+  - 多个复杂的异步或者事件组合在一起
+  - 处理多个数据序列（有一定顺序） 
+
+没被异步问题困扰的话，那就不要使用 RxJS 吧，因为 Promise 已经能够解决简单的异步问题了。Promise VS Observable？
 
 ## RxJS实现的维基百科搜索示例，与Auto-Suggest组件相似
 ```
@@ -62,11 +68,11 @@ suggestions.subscribe(data => {
     - Worker
 
   - Observable  
-    RxJS 是基于观察者模式和迭代器模式以函数式编程思维来实现的，RxJS拥有非常陡峭的学习曲线。
+    它提供了一个核心类型:Observable以及辅助类型(Observer、Schedulers、Subjects)和操作符-衍生自一些数组方法，使得我们可以把异步事件以集合的方式进行处理。
+    RxJS 是基于观察者模式和迭代器模式以函数式编程思维来实现的。
 
-  - lodash for async  
-    RxJS是Observable的一种引用实现，它提供了一些定制的功能，比如操作符（Operators）、创建不同类型Observable的工厂方法
-  在前端，我们通常有这么一些方式来处理异步的东西：
+  - lodash for async event
+    我们通常有这么一些方式来处理异步的东西：
     - 回调
     - 事件
     - Promise
@@ -77,9 +83,8 @@ suggestions.subscribe(data => {
     - 流程
 
     RxJS的优势在于结合了两种模式，它的每个Observable上都能够订阅，而Observable之间的关系，则能够体现流程。
-    从事件到流，它被称为lodash for events，倒不如说是lodash for stream更贴切，它提供的这些操作符也确实可以跟lodash媲美。
-
-    它和lodash一样也是个工具库。lodash的用法基本上就是，你给它一个输入，它给你一个输出。RxJS的用法则是，你给它一个输入，它给你一个输出，但是跨越了时间。所以，你可以拥有多个值
+    
+    RxJS相当于一个针对事件的Lodash(一个JS库)，lodash的用法基本上就是，你给它一个输入，它给你一个输出。RxJS的用法则是，你给它一个输入，它给你一个输出，但是跨越了时间。所以，你可以拥有多个值
 
   
 
@@ -170,7 +175,7 @@ Rx.Observable.of(2).subscribe(v => console.log(v));
 ```
 //可以把定时器做成一种服务，把业务上需要周期执行的东西放进去，当作定时任务来跑，使用RxJS：
 Observable.interval(1000).subscribe(() => {
-  ...code
+  ...async code
 })
 ```
 
@@ -255,7 +260,7 @@ const editable$ = Observable.combineLatest(article$, me$)
 
 更详细探索的可以参见之前的这篇文章：[复杂单页应用的数据层设计](https://github.com/xufei/blog/issues/42)
 
-# 异步操作  
+4. 总结  
 > 在函数式编程中，异步操作、修改全局变量等与函数外部环境发生的交互叫做副作用（Side Effect）
 通常认为这些操作是邪恶（evil）肮脏（dirty）的，并且也是导致 bug 的源头。
 因为与之相对的是纯函数（pure function），即对于同样的输入总是返回同样的输出的函数，使用这样的函数很容易做组合、测试等操作，很容易验证和保证其正确性。（它们就像数学公式一般准确）  
@@ -278,6 +283,6 @@ redux-observable 就是一个使用 RxJS 监听每个 action 并将其变成可�
 
 从这个talk中，我们可以学习到：
 
-    - RxJS是什么，基本概念。
+    - RxJS基本概念及适用场景。
     - RxJS API简介及实例。
     - redux-observable的工作原理以及适用场景。
