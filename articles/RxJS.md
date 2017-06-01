@@ -257,46 +257,29 @@ const editable$ = Observable.combineLatest(article$, me$)
 其实本质上还是reducer，表达的是数据的合并与转换过程，而且是同步的。我们可以把article和me的变更reduce到article$和me$流中，由它们派发隐式的action去推动editable计算新值。
 
 ## RxJS 在复杂单页应用的数据层设计的特性  
-异步操作    
+频繁的异步操作导致共享数据冲突    
 > 在函数式编程中，异步操作、修改全局变量等与函数外部环境发生的交互叫做副作用（Side Effect）
 通常认为这些操作是邪恶（evil）肮脏（dirty）的，并且也是导致 bug 的源头。
 因为与之相对的是纯函数（pure function），即对于同样的输入总是返回同样的输出的函数，使用这样的函数很容易做组合、测试等操作，很容易验证和保证其正确性。（它们就像数学公式一般准确）  
-- Observable，基于订阅模式
-- 类似Promise对同步和异步的统一
-```
-function getDataP() {
-  if (a) {
-    return Promise.resolve(a)
-  } else {
-    return AJAX.get('a')
-  }
-}
 
-function getDataO() {
-  if (a) {
-    return Observable.of(a)
-  } else {
-    return Observable.fromPromise(AJAX.get('a'))
-  }
-}
-```
-- 查询和推送可统一为数据管道
-- 容易组合的数据管道
-- 形拉实推，兼顾编写的便利性和执行的高效性
-- 懒执行，不被订阅的数据流不执行
+特性：
+  - Observable，基于订阅模式
+  - 类似Promise对同步和异步的统一
+  - 查询和推送可统一为数据管道
+  - 容易组合的数据管道
+  - 形拉实推，兼顾编写的便利性和执行的高效性
+  - 懒执行，不被订阅的数据流不执行
 更详细探索的可以参见之前的这篇文章：[复杂单页应用的数据层设计](https://github.com/xufei/blog/issues/42)
-
-
 
 ## redux-thunk 中间件  
 redux-thunk 这种方案对于小型的应用来说足够日常使用，对于大型应用可能会发现一些不方便的地方。（例如对于 action 需要组合、取消、竞争等复杂操作的场景）
 
-简单来说 thunk 就是封装了表达式的函数，目的是延迟执行该表达式。
-设计 state 结构 + Promise
+简单来说 thunk 就是封装了表达式的函数，目的是延迟执行该表达式。  
+设计 state 结构 + Promise + apiMiddleware 
 ```
 () => dispatch => {
   dispatch(action1)
-  return promise.then(
+  return fetchPromise.then(
     () => dispatch(action2));
 }
 ```
