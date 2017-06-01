@@ -8,7 +8,7 @@ RxJS(Reactive Extensions for JavaScript)是一个通过使用可观察序列来�
 
 没被异步问题困扰的话，那就不要使用 RxJS 吧，因为 Promise 已经能够解决简单的异步问题了。Promise VS Observable？
 
-## RxJS实现的维基百科搜索示例，与Auto-Suggest组件相似
+## RxJS实现的搜索示例，与Auto-Suggest组件相似
 ```
 var $input = $('#input'),
     $results = $('#results');
@@ -170,12 +170,11 @@ Rx.Observable.of(2).subscribe(v => console.log(v));
 
 # 应用示例
 
-## 示例一：简单的订阅
-定时器
+## 示例一：定时器
 ```
 //可以把定时器做成一种服务，把业务上需要周期执行的东西放进去，当作定时任务来跑，使用RxJS：
 Observable.interval(1000).subscribe(() => {
-  ...async code
+  ...code
 })
 ```
 
@@ -207,7 +206,7 @@ C:          1                                   13                19
 D:                1                                   13
 ```
 
-## 示例三：自动更新的状态树
+## 示例三：状态的更新
 1. 模拟Redux理念：当前视图状态 := 之前的状态 + 本次修改的部分
 ```
 const action$ = new Subject()
@@ -238,7 +237,6 @@ const state$ = Observable
     (me, article) => {me, article}
   )
 ```
-可以基于RxJS实现的Redux-Observable这样的Redux中间件。
 
 3. 实现复杂reducer的合并与转换过程
 在比较复杂的场景下，reducer其实很复杂。比如说，视图上发起一个操作，会需要修改视图的好多地方，因此也就是要修改全局状态树的不同位置。
@@ -258,13 +256,50 @@ const editable$ = Observable.combineLatest(article$, me$)
 ```
 其实本质上还是reducer，表达的是数据的合并与转换过程，而且是同步的。我们可以把article和me的变更reduce到article$和me$流中，由它们派发隐式的action去推动editable计算新值。
 
-更详细探索的可以参见之前的这篇文章：[复杂单页应用的数据层设计](https://github.com/xufei/blog/issues/42)
-
-4. 总结  
+## RxJS 在复杂单页应用的数据层设计的特性  
+异步操作    
 > 在函数式编程中，异步操作、修改全局变量等与函数外部环境发生的交互叫做副作用（Side Effect）
 通常认为这些操作是邪恶（evil）肮脏（dirty）的，并且也是导致 bug 的源头。
 因为与之相对的是纯函数（pure function），即对于同样的输入总是返回同样的输出的函数，使用这样的函数很容易做组合、测试等操作，很容易验证和保证其正确性。（它们就像数学公式一般准确）  
+- Observable，基于订阅模式
+- 类似Promise对同步和异步的统一
+```
+function getDataP() {
+  if (a) {
+    return Promise.resolve(a)
+  } else {
+    return AJAX.get('a')
+  }
+}
 
+function getDataO() {
+  if (a) {
+    return Observable.of(a)
+  } else {
+    return Observable.fromPromise(AJAX.get('a'))
+  }
+}
+```
+- 查询和推送可统一为数据管道
+- 容易组合的数据管道
+- 形拉实推，兼顾编写的便利性和执行的高效性
+- 懒执行，不被订阅的数据流不执行
+更详细探索的可以参见之前的这篇文章：[复杂单页应用的数据层设计](https://github.com/xufei/blog/issues/42)
+
+
+
+## redux-thunk 中间件  
+redux-thunk 这种方案对于小型的应用来说足够日常使用，对于大型应用可能会发现一些不方便的地方。（例如对于 action 需要组合、取消、竞争等复杂操作的场景）
+
+简单来说 thunk 就是封装了表达式的函数，目的是延迟执行该表达式。
+设计 state 结构 + Promise
+```
+() => dispatch => {
+  dispatch(action1)
+  return promise.then(
+    () => dispatch(action2));
+}
+```
 
 ## RxJS和Redux的结合: redux-observable 中间件
 
@@ -277,7 +312,7 @@ redux-observable 就是一个使用 RxJS 监听每个 action 并将其变成可�
 工作原理：  
 ![Alt text](../resource/redux-observable-flow.png)
 
-让跨时间的复杂异步任务的组合和控制变得简单，当然如果只是做请求-响应这种简单的Ajax，那么学习RxJS是多余的。
+让跨时间的复杂异步任务的组合和控制变得简单。
 
 # 总结
 
