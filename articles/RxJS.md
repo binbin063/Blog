@@ -1,12 +1,12 @@
 # RxJS
 
-RxJS(Reactive Extensions for JavaScript)是一个通过使用可观察序列来构建异步和基于事件的程序的库, 提供了强大的数据流组合与控制能力。
+RxJS(Reactive Extensions for JavaScript)是一个通过使用可观察序列来构建异步和基于事件的JS库, 提供了强大的数据流组合与控制能力。
 
 ## 适用场景  
   - 多个复杂的异步或者事件组合在一起
   - 处理多个数据序列（有一定顺序） 
 
-没被异步问题困扰的话，那就不要使用 RxJS 吧，因为 Promise 已经能够解决简单的异步问题了。Promise VS Observable？
+没被异步问题困扰的话，那就不要使用 RxJS ，因为 Promise 已经能够解决简单的异步问题了。Promise VS Observable？
 
 ## RxJS实现的搜索示例，与Auto-Suggest组件相似
 ```
