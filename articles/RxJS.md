@@ -283,6 +283,7 @@ const editable$ = Observable.combineLatest(article$, me$)
   - 容易组合的数据管道
   - 形拉实推，兼顾编写的便利性和执行的高效性
   - 懒执行，不被订阅的数据流不执行
+  
 更详细探索的可以参见之前的这篇文章：[复杂单页应用的数据层设计](https://github.com/xufei/blog/issues/42)
 
 ## redux-thunk 中间件  
